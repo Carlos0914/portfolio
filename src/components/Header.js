@@ -18,7 +18,9 @@ const Header = () => {
   };
   const handleMobileNavigation = (path) => {
     setAnchorEl(null);
-    navigate(path);
+    if(path) {
+        navigate(path);
+    }
   };
 
   return (
@@ -68,7 +70,7 @@ const Header = () => {
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
-          onClose={handleMobileNavigation}
+          onClose={() => handleMobileNavigation()}
           MenuListProps={{
             "aria-labelledby": "basic-button",
           }}

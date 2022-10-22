@@ -1,21 +1,28 @@
 import Header from "./components/Header";
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
 
 const theme = createTheme({
   colors: {
     header: "black",
   },
+  palette: {
+    background: {
+      default: '#cccccc'
+    }
+  }
 });
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Header />
         <Routes>
-          <Route path="/" element={<></>} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<></>} />
           <Route path="/experience" element={<></>} />
         </Routes>
