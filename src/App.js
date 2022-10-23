@@ -3,6 +3,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import Projects from "./pages/Projects";
 
 const theme = createTheme({
   colors: {
@@ -23,7 +24,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/projects" element={<></>} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/experience" element={<></>} />
         </Routes>
       </ThemeProvider>

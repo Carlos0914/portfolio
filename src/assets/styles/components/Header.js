@@ -35,7 +35,7 @@ export const useStyles = makeStyles((theme) => ({
     color: "white !important",
   },
   menuItemActive: {
-    background: '#dddddd'
+    background: '#dddddd !important'
   },
   navButton: {
     color: "white",
