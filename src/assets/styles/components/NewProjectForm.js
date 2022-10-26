@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme) => ({
     form: {
         width: '100%',
         display: 'block',
-        paddingBottom: 12,
+        paddingBottom: 25,
         "& div": {
             marginBottom: 5
         }

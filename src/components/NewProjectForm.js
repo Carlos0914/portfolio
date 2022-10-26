@@ -18,7 +18,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 
 import { useStyles } from "../assets/styles/components/NewProjectForm.js";
-import client from "../client";
+import client from "../utils/client";
+import { saveFile } from "../utils/saveFile";
 
 // import NewTechModal from "./NewTechModal";
 
@@ -40,15 +41,15 @@ const NewProjectForm = () => {
 
   const [allTechnologies, setAllTechnologies] = useState([]);
 
-  useEffect(() => {
-    (async () => {
-      let response = await fetch("/api/technologies");
-      response = await response.json();
-      setAllTechnologies(
-        response.data.sort((a, b) => a.name.localeCompare(b.name))
-      );
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     let response = await fetch("/api/technologies");
+  //     response = await response.json();
+  //     setAllTechnologies(
+  //       response.data.sort((a, b) => a.name.localeCompare(b.name))
+  //     );
+  //   })();
+  // }, []);
 
   const handleChange = (event) => {
     switch (event.target.name) {
@@ -132,41 +133,13 @@ const NewProjectForm = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    // let imageId = "";
-    // if (state.input) {
-    //     const ab = await state.input.arrayBuffer();
-    //     const file = Object.values(new Uint8Array(ab));
-    //     imageId = await fetch("/api/images/upload", {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //             file,
-    //             folder: "ProjectLogos",
-    //         }),
-    //     })
-    //         .then(async (response) => {
-    //             const result = (await response.json()).data;
-    //             console.log(result);
-    //             const imageResponse = await fetch("/api/images", {
-    //                 method: "POST",
-    //                 body: JSON.stringify({
-    //                     original_url: result.secure_url,
-    //                     resized_url: result.eager[0].secure_url,
-    //                     original_size: {
-    //                         width: result.width,
-    //                         height: result.height,
-    //                     },
-    //                     asset_id: result.public_id,
-    //                 }),
-    //             });
-    //             const imageData = await imageResponse.json();
-    //             console.log(imageData);
-    //             return imageData.data._id;
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //             alert(error);
-    //         });
-    // }
+    let image_url = "";
+    if (state.input) {
+      const [success, url] = await saveFile(state.input, "projects")
+      if(success) {
+        image_url = url
+      }
+    }
     const projectData = {
       name: state.name,
       description: state.description,
@@ -174,14 +147,12 @@ const NewProjectForm = () => {
       technologies: state.technologies.map((item) => item._id),
       start_date: state.startDate?.toLocaleDateString("es") || "",
       end_date: state.endDate?.toLocaleDateString("es") || "",
-      // logo: imageId,
+      logo: image_url,
     };
-    await client("projects", projectData, "POST", {
-      "Content-Type": "application/json",
-    }).then(async (response) => {
-      const { data } = await response.json();
-      setCheck(data);
-    });
+    await client("/projects", {
+      body: JSON.stringify(projectData),
+      method: 'POST'
+    })
   };
 
   const handleStartDateChange = (value, keyboardInputValue) => {
