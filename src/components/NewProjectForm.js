@@ -20,7 +20,7 @@ import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useStyles } from "../assets/styles/components/NewProjectForm.js";
 import client from "../client";
 
-// import NewTechModal from "./NewTechModal";
+import NewTechModal from "./NewTechModal.js";
 
 const NewProjectForm = () => {
   const classes = useStyles();
@@ -132,41 +132,16 @@ const NewProjectForm = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    // let imageId = "";
-    // if (state.input) {
-    //     const ab = await state.input.arrayBuffer();
-    //     const file = Object.values(new Uint8Array(ab));
-    //     imageId = await fetch("/api/images/upload", {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //             file,
-    //             folder: "ProjectLogos",
-    //         }),
-    //     })
-    //         .then(async (response) => {
-    //             const result = (await response.json()).data;
-    //             console.log(result);
-    //             const imageResponse = await fetch("/api/images", {
-    //                 method: "POST",
-    //                 body: JSON.stringify({
-    //                     original_url: result.secure_url,
-    //                     resized_url: result.eager[0].secure_url,
-    //                     original_size: {
-    //                         width: result.width,
-    //                         height: result.height,
-    //                     },
-    //                     asset_id: result.public_id,
-    //                 }),
-    //             });
-    //             const imageData = await imageResponse.json();
-    //             console.log(imageData);
-    //             return imageData.data._id;
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //             alert(error);
-    //         });
-    // }
+    let image_url = "";
+    if (state.input) {
+      const blob = new Blob([state.input]);
+      const { success, response } = await client("assets", blob, "POST", {});
+      if (success && response) {
+        image_url = response.image_url;
+      } else {
+        console.log(response);
+      }
+    }
     const projectData = {
       name: state.name,
       description: state.description,
@@ -174,7 +149,7 @@ const NewProjectForm = () => {
       technologies: state.technologies.map((item) => item._id),
       start_date: state.startDate?.toLocaleDateString("es") || "",
       end_date: state.endDate?.toLocaleDateString("es") || "",
-      // logo: imageId,
+      logo: image_url,
     };
     await client("projects", projectData, "POST", {
       "Content-Type": "application/json",
@@ -470,11 +445,11 @@ const NewProjectForm = () => {
           </form>
         </CardContent>
       </Card>
-      {/* <NewTechModal
-                open={open}
-                setOpen={setOpen}
-                setAllTechnologies={setAllTechnologies}
-            /> */}
+      <NewTechModal
+        open={open}
+        setOpen={setOpen}
+        setAllTechnologies={setAllTechnologies}
+      />
     </>
   );
 };

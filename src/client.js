@@ -1,4 +1,5 @@
-const baseURL = "https://m94pjpjiah.execute-api.us-east-1.amazonaws.com";
+// const baseURL = "https://m94pjpjiah.execute-api.us-east-1.amazonaws.com";
+const baseURL = "http://localhost:3001";
 
 const client = (endpoint, body, method, customHeaders, customConfig) => {
   try {
@@ -7,15 +8,18 @@ const client = (endpoint, body, method, customHeaders, customConfig) => {
         // "Content-Type": "application/json",
         ...customHeaders,
       },
-      ...(body && { body: JSON.stringify(body) }),
+      ...(body && {
+        body: `${customHeaders["Content-Type"]}`.includes("json")
+          ? JSON.stringify(body)
+          : body,
+      }),
       method: method || "POST",
-      mode: "no-cors",
       ...customConfig,
     };
 
-    console.log(config)
+    console.log(config);
     return fetch(`${baseURL}/${endpoint}`, config).then(async (response) => {
-      console.log(response)
+      console.log(response);
       const data = await response.json();
       if (response.ok) {
         return {
