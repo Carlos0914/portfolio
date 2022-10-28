@@ -1,12 +1,12 @@
 import { Box, Modal, TextField, Button, Input } from "@mui/material";
 import React, { useRef } from "react";
 import { useState } from "react";
-import client from "../client";
-
-// import classes from "./NewTechModal.module.css";
+import client from "../utils/client";
+import { saveFile } from "../utils/saveFile";
+import { useStyles } from "../assets/styles/components/NewTechModal";
 
 const NewTechModal = (props) => {
-  const classes = {};
+  const classes = useStyles();
   const logoRef = useRef(null);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
@@ -35,16 +35,13 @@ const NewTechModal = (props) => {
     event.preventDefault();
     let image_url = "";
     if (logo) {
-      const file = new Blob([logo]);
-      const { success, response } = await client("assets", file, "POST", {});
-      console.log(success, response);
-      if (success && response) {
-        image_url = response.image_url;
-      } else {
-        console.log(response);
+      const [successUpload, url] = await saveFile(logo, "technologies");
+      if (successUpload) {
+        image_url = url;
+        console.log(image_url);
       }
     }
-    const { success, response } = await client("technologies", {
+    const { success, response } = await client("/technologies", {
       method: "POST",
       body: JSON.stringify({
         name,
@@ -57,8 +54,13 @@ const NewTechModal = (props) => {
     });
     if (success && response) {
       props.setAllTechnologies((prevState) =>
-        [response, ...prevState].sort((a, b) => a.name.localeCompare(b.name))
+        [{ name, url, icon: image_url }, ...prevState].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
       );
+      setUrl("");
+      setName("");
+      setLogo("");
     }
   };
 

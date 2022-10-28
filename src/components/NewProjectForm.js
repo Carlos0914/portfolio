@@ -18,7 +18,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 
 import { useStyles } from "../assets/styles/components/NewProjectForm.js";
-import client from "../client";
+import client from "../utils/client";
+import { saveFile } from "../utils/saveFile";
 
 import NewTechModal from "./NewTechModal.js";
 
@@ -42,13 +43,18 @@ const NewProjectForm = () => {
 
   useEffect(() => {
     (async () => {
-      let response = await fetch("/api/technologies");
-      response = await response.json();
-      setAllTechnologies(
-        response.data.sort((a, b) => a.name.localeCompare(b.name))
-      );
+      let { success, response } = await client("/technologies");
+      if (success && response) {
+        setAllTechnologies(
+          response.technologies.sort((a, b) => a.name.localeCompare(b.name))
+        );
+      }
     })();
   }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [allTechnologies]);
 
   const handleChange = (event) => {
     switch (event.target.name) {
@@ -134,12 +140,9 @@ const NewProjectForm = () => {
     event.preventDefault();
     let image_url = "";
     if (state.input) {
-      const blob = new Blob([state.input]);
-      const { success, response } = await client("assets", blob, "POST", {});
-      if (success && response) {
-        image_url = response.image_url;
-      } else {
-        console.log(response);
+      const [success, url] = await saveFile(state.input, "projects");
+      if (success) {
+        image_url = url;
       }
     }
     const projectData = {
@@ -151,11 +154,9 @@ const NewProjectForm = () => {
       end_date: state.endDate?.toLocaleDateString("es") || "",
       logo: image_url,
     };
-    await client("projects", projectData, "POST", {
-      "Content-Type": "application/json",
-    }).then(async (response) => {
-      const { data } = await response.json();
-      setCheck(data);
+    await client("/projects", {
+      body: JSON.stringify(projectData),
+      method: "POST",
     });
   };
 
@@ -309,12 +310,7 @@ const NewProjectForm = () => {
                             display: "flex",
                           }}
                         >
-                          <img
-                            src={item.icon.original_url}
-                            width={32}
-                            height={32}
-                            alt=""
-                          />
+                          <img src={item.icon} alt="" />
                           <p
                             style={{
                               marginLeft: "5px",
