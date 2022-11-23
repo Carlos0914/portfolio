@@ -310,7 +310,7 @@ const NewProjectForm = () => {
                             display: "flex",
                           }}
                         >
-                          <img src={item.icon} alt="" />
+                          <img src={item.icon} style={{ height: 32 }} alt="" />
                           <p
                             style={{
                               marginLeft: "5px",

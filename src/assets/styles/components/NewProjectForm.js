@@ -12,10 +12,8 @@ export const useStyles = makeStyles((theme) => ({
     photoContainer: {
         display: 'flex',
         maxHeight: 250,
-        maxWidth: 'auto',
         justifyContent: 'center',
-        paddingBottom: 5,
-        paddingTop: 10
+        padding: 20
     },
     submit: {
         float: 'right',
@@ -25,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: 'center'
     },
     logo: {
-        background: '#DEDEDE'
+        // background: '#DEDEDE'
     },
     dateError: {
         "& fieldset": {

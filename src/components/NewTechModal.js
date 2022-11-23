@@ -104,7 +104,7 @@ const NewTechModal = (props) => {
           {renderLogo && (
             <span className={classes.photoContainer}>
               <img
-                src={renderLogo || "https://via.placeholder.com/250x250"}
+                src={renderLogo}
                 alt="Logo"
               />
             </span>

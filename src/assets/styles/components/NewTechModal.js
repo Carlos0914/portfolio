@@ -23,12 +23,13 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   photoContainer: {
-    display: "flex",
-    maxHeight: 250,
-    maxWidth: "auto",
-    justifyContent: "center",
-    paddingBottom: 5,
-    paddingTop: 10,
+    width: 128, 
+    height: 128,
+    display: 'block',
+    margin: '0 auto',
+    "& img": {
+      width: 'inherit'
+    }
   },
   modalActions: {
     float: "right",

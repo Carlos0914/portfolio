@@ -1,5 +1,5 @@
-// const baseURL = "http://localhost:3001";
-const baseURL = "https://m94pjpjiah.execute-api.us-east-1.amazonaws.com";
+const baseURL = "http://localhost:3001";
+// const baseURL = "https://m94pjpjiah.execute-api.us-east-1.amazonaws.com";
 const client = async (requestPath, requestParams = {}, contentType = "application/json") => {
 	try {
 		const response = await fetch(`${baseURL}${requestPath}`, {
